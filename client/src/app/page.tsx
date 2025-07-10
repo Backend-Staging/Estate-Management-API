@@ -1,6 +1,6 @@
 import buildings from "@/../public/assets/images/buildings.webp";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
-import type { Metadata } from "next";
+import type { Metadata} from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,7 +8,12 @@ export const metadata: Metadata = {
 	title: "Home | Alpha Apartments",
 	description:
 		"Alpha Apartments Home Page. Create your account to get started.",
+	icons: {
+			icon: "favicon.ico", // Can also be a .png or .svg
+		  },
 };
+
+
 
 export default function HomePage() {
 	return (

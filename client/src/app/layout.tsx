@@ -11,24 +11,32 @@ import { PersistAuth } from "@/utils";
 export const metadata: Metadata = {
 	title: "Home | Alpha Apartments",
 	description: "Welcome home",
+  icons: {
+    icon: "favicon.ico", // Can also be a .png or .svg
+    },
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${openSans.variable} ${robotoSlab.variable}`}>
-        <Toast />
-        <ReduxProvider>
-          <PersistAuth />
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-            </ThemeProvider>
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<body className={`${openSans.variable} ${robotoSlab.variable}`}>
+				<Toast />
+				<ReduxProvider>
+					<PersistAuth />
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						{children}
+					</ThemeProvider>
 				</ReduxProvider>
-     </body>
-    </html>
-  );
+			</body>
+		</html>
+	);
 }
