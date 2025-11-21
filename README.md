@@ -94,4 +94,4 @@ This portal is designed to streamline communication and management for apartment
 
 ---
 
-For more details, see the documentation in each subdirectory or contact the project maintainer.
+For more details, see the documentation in each subdirectory or contact me at 🌐 [Jonathan Constant](https://www.linkedin.com/in/jonathan-constant-b7462021a/).

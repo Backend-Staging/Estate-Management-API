@@ -4,13 +4,24 @@ FROM base as node-build-stage
 
 RUN apk add --no-cache libc6-compat
 
+# Configure npm with increased timeout and retry settings
+RUN npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-timeout 300000
+
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
+# Retry logic for package installation
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \
-  else echo "Lockfile not found." && exit 1; \
+  if [ -f yarn.lock ]; then \
+    yarn --frozen-lockfile || (sleep 5 && yarn --frozen-lockfile) || (sleep 10 && yarn --frozen-lockfile); \
+  elif [ -f package-lock.json ]; then \
+    npm ci || (sleep 5 && npm ci) || (sleep 10 && npm ci); \
+  elif [ -f pnpm-lock.yaml ]; then \
+    corepack enable pnpm && (pnpm i || (sleep 5 && pnpm i) || (sleep 10 && pnpm i)); \
+  else \
+    echo "Lockfile not found." && exit 1; \
   fi
 
 FROM base as node-run-stage

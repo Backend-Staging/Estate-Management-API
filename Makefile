@@ -1,6 +1,14 @@
 build:
 	docker compose -f local.yml up --build -d --remove-orphans
 
+build-no-cache:
+	docker compose -f local.yml build --no-cache
+	docker compose -f local.yml up -d --remove-orphans
+
+build-client:
+	docker compose -f local.yml build --no-cache client
+	docker compose -f local.yml up -d client
+
 up:
 	docker compose -f local.yml up -d 
 	
@@ -36,3 +44,16 @@ mailpit-volume:
 
 estate-db:
 	docker compose -f local.yml exec postgres psql --username=alphaogilo --dbname=estate
+
+test:
+	docker compose -f local.yml run --rm api pytest
+
+test-cov:
+	docker compose -f local.yml run --rm api pytest --cov-report=term-missing
+
+test-html:
+	docker compose -f local.yml run --rm api pytest --cov-report=html
+	@echo "Coverage report generated in htmlcov/index.html"
+
+test-watch:
+	docker compose -f local.yml run --rm api pytest -f
