@@ -49,11 +49,23 @@ test:
 	docker compose -f local.yml run --rm api pytest
 
 test-cov:
-	docker compose -f local.yml run --rm api pytest --cov-report=term-missing
+	docker compose -f local.yml run --rm api pytest --cov=core_apps --cov-report=term-missing
 
 test-html:
-	docker compose -f local.yml run --rm api pytest --cov-report=html
+	docker compose -f local.yml run --rm api pytest --cov=core_apps --cov-report=html
 	@echo "Coverage report generated in htmlcov/index.html"
 
 test-watch:
 	docker compose -f local.yml run --rm api pytest -f
+
+test-verbose:
+	docker compose -f local.yml run --rm api pytest -v
+
+test-specific:
+	docker compose -f local.yml run --rm api pytest $(TEST_PATH)
+
+test-fail-fast:
+	docker compose -f local.yml run --rm api pytest -x
+
+test-coverage-check:
+	docker compose -f local.yml run --rm api pytest --cov=core_apps --cov-report=term-missing --cov-fail-under=90
