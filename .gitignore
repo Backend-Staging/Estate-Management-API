@@ -1,6 +1,10 @@
 .vscode
 .idea
-.Ds_Store
+.DS_Store
+.envs/*
+!.envs/
+!.envs/.env.example
+client/.vercel/
 staticfiles/
 .envs/*
 ! .envs/ .env.example
@@ -249,6 +253,20 @@ client/.env*.local
 # vercel
 client.vercel
 
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+!infra/terraform/terraform.tfvars.example
+infra/terraform/crash.*
+infra/terraform/override.tf
+infra/terraform/*_override.tf
+
 # typescript
 client/*.tsbuildinfo
 client/next-env.d.ts
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl

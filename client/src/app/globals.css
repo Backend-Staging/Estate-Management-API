@@ -2,10 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    font-family: var(--font-openSans);
-    background-color: hsl(var(--background));
-
+body {
+	font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	background-color: hsl(var(--background));
 }
 
 /* Light theme react select styling */

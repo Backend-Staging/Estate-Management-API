@@ -31,46 +31,24 @@ class RatingCreateAPIView(generics.CreateAPIView):
             raise PermissionDenied("You cannot review yourself.")
 
         try:
-            rating_user_occupation = rating_user.profile.occupation
-            rated_user_occupation = rated_user.profile.occupation
+            r_role = rating_user.profile.role
+            rated_role = rated_user.profile.role
         except Profile.DoesNotExist:
-            raise ValidationError("Both users must have a valid occupation.")
+            raise ValidationError("Both users must have a profile.")
 
-        if (
-            rating_user_occupation == Profile.Occupation.TENANT
-            and rated_user_occupation == Profile.Occupation.TENANT
-        ):
+        if r_role == Profile.Role.TENANT and rated_role == Profile.Role.TENANT:
             raise PermissionDenied("A tenant cannot review another tenant.")
 
-        allowed_occupations = [
-            Profile.Occupation.Carpenter,
-            Profile.Occupation.Electrician,
-            Profile.Occupation.Plumber,
-            Profile.Occupation.HVAC,
-            Profile.Occupation.Mason,
-            Profile.Occupation.Roofer,
-            Profile.Occupation.Painter,
-        ]
-
-        if (
-            rating_user_occupation == Profile.Occupation.TENANT
-            and rated_user_occupation not in allowed_occupations
-        ):
+        if r_role == Profile.Role.TENANT and rated_role != Profile.Role.REPAIR:
             raise PermissionDenied(
-                "A tenant can only review technicians and not other tenants!"
+                "A tenant can only review repair staff, not other tenants or agents."
             )
 
-        if (
-            rating_user_occupation != Profile.Occupation.TENANT
-            and rating_user == rated_user
-        ):
-            raise PermissionDenied("A technician cannot review themselves.")
+        if r_role != Profile.Role.TENANT and rating_user == rated_user:
+            raise PermissionDenied("Repair staff cannot review themselves.")
 
-        if (
-            rating_user_occupation != Profile.Occupation.TENANT
-            and rated_user_occupation != Profile.Occupation.TENANT
-        ):
-            raise PermissionDenied("A technician cannot review another technician.")
+        if r_role != Profile.Role.TENANT and rated_role != Profile.Role.TENANT:
+            raise PermissionDenied("Repair staff cannot review another non-tenant.")
 
         rating = serializer.save(rating_user=rating_user, rated_user=rated_user)
 

@@ -11,6 +11,12 @@ from django.contrib.contenttypes.models import ContentType
 
 from core_apps.apartments.models import Apartment
 from core_apps.common.models import ContentView
+from core_apps.common.permissions import (
+    IsAgentOrPlatformAdmin,
+    IsRepairOrPlatformAdmin,
+    IsTenantOrPlatformAdmin,
+    user_is_platform_admin,
+)
 from core_apps.common.renderers import GenericJSONRenderer
 from .emails import send_issue_confirmation_email, send_issue_resolved_email
 from .models import Issue
@@ -19,50 +25,72 @@ from .serializers import IssueSerializer, IssueStatusUpdateSerializer
 logger = logging.getLogger(__name__)
 
 
-class IsStaffOrSuperUser(permissions.BasePermission):
-    def __init__(self) -> None:
-        self.message = None
+def _user_can_view_issue(user, issue: Issue) -> bool:
+    if user_is_platform_admin(user):
+        return True
+    if issue.reported_by_id == user.id or issue.assigned_to_id == user.id:
+        return True
+    ap = issue.apartment
+    if ap.managed_by_id == user.id:
+        return True
+    return False
 
-    def has_permission(self, request, view):
-        is_authorized = (
-            request.user
-            and request.user.is_authenticated
-            and (request.user.is_staff or request.user.is_superuser)
-        )
-        if not is_authorized:
-            self.message = (
-                "Access to this information is restricted to staff and admin users only"
-            )
-        return is_authorized
+
+def _user_can_update_issue(user, issue: Issue) -> bool:
+    if user_is_platform_admin(user):
+        return True
+    if issue.assigned_to_id == user.id:
+        return True
+    ap = issue.apartment
+    if ap.managed_by_id == user.id:
+        return True
+    return False
+
+
+def _user_can_delete_issue(user, issue: Issue) -> bool:
+    if user_is_platform_admin(user):
+        return True
+    if issue.reported_by_id == user.id:
+        return True
+    ap = issue.apartment
+    if ap.managed_by_id == user.id:
+        return True
+    return False
 
 
 class IssueListAPIView(generics.ListAPIView):
-    queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     renderer_classes = [GenericJSONRenderer]
-    permission_classes = [IsStaffOrSuperUser]
+    permission_classes = [permissions.IsAuthenticated, IsAgentOrPlatformAdmin]
     object_label = "issues"
+
+    def get_queryset(self):
+        u = self.request.user
+        if u.is_superuser or u.is_staff:
+            return Issue.objects.all()
+        return Issue.objects.filter(apartment__managed_by=u).order_by("-created_at")
 
 
 class AssignedIssuesListView(generics.ListAPIView):
     serializer_class = IssueSerializer
     renderer_classes = [GenericJSONRenderer]
+    permission_classes = [permissions.IsAuthenticated, IsRepairOrPlatformAdmin]
     object_label = "assigned_issues"
 
     def get_queryset(self):
         user = self.request.user
-        return Issue.objects.filter(assigned_to=user)
+        return Issue.objects.filter(assigned_to=user).order_by("-created_at")
 
 
 class MyIssuesListAPIView(generics.ListAPIView):
-    queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     renderer_classes = [GenericJSONRenderer]
+    permission_classes = [permissions.IsAuthenticated, IsTenantOrPlatformAdmin]
     object_label = "my_issues"
 
     def get_queryset(self):
         user = self.request.user
-        return Issue.objects.filter(reported_by=user)
+        return Issue.objects.filter(reported_by=user).order_by("-created_at")
 
 
 class IssueCreateAPIView(generics.CreateAPIView):
@@ -80,7 +108,12 @@ class IssueCreateAPIView(generics.CreateAPIView):
             apartment = Apartment.objects.get(id=apartment_id, tenant=self.request.user)
         except Apartment.DoesNotExist:
             raise PermissionDenied(
-                "You do not have permission to report an issue for this apartment. its not yours"
+                "You do not have permission to report an issue for this apartment. "
+                "It is not your assigned unit."
+            )
+        if apartment.tenant_verified_at is None:
+            raise PermissionDenied(
+                "Your tenancy must be verified by your agent before you can open issues."
             )
 
         issue = serializer.save(reported_by=self.request.user, apartment=apartment)
@@ -98,10 +131,7 @@ class IssueDetailAPIView(generics.RetrieveAPIView):
     def get_object(self) -> Issue:
         issue = super().get_object()
 
-        user = self.request.user
-        if not (
-            user == issue.reported_by or user.is_staff or user == issue.assigned_to
-        ):
+        if not _user_can_view_issue(self.request.user, issue):
             raise PermissionDenied("You do not have permission to view this issue")
         self.record_issue_view(issue)
         return issue
@@ -111,9 +141,9 @@ class IssueDetailAPIView(generics.RetrieveAPIView):
         viewer_ip = self.get_client_ip()
         user = self.request.user
 
-        obj, created = ContentView.objects.update_or_create(
+        ContentView.objects.update_or_create(
             content_type=content_type,
-            object_id=issue.pk,
+            object_id=issue.pkid,
             user=user,
             viewer_ip=viewer_ip,
             defaults={"last_viewed": timezone.now()},
@@ -139,9 +169,11 @@ class IssueUpdateAPIView(generics.UpdateAPIView):
         issue = super().get_object()
         user = self.request.user
 
-        if not (user.is_staff or user == issue.assigned_to):
+        if not _user_can_update_issue(user, issue):
             logger.warning(
-                f"Unauthorized issue status update attempt by user {user.get_full_name} on issue {issue.title}"
+                "Unauthorized issue status update attempt by user %s on issue %s",
+                user,
+                issue.title,
             )
             raise PermissionDenied("You do not have permission to update the issue")
         send_issue_resolved_email(issue)
@@ -159,9 +191,11 @@ class IssueDeleteAPIView(generics.DestroyAPIView):
         except Http404:
             raise Http404("Issue not found") from None
         user = self.request.user
-        if not (user == issue.reported_by or user.is_staff):
+        if not _user_can_delete_issue(user, issue):
             logger.warning(
-                f"Unauthorized delete attempt by user {user.get_full_name} on issue {issue.title}"
+                "Unauthorized delete attempt by user %s on issue %s",
+                user,
+                issue.title,
             )
             raise PermissionDenied("You do not have permission to delete this issue")
         return issue

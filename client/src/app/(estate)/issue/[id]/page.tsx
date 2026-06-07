@@ -2,7 +2,7 @@ import IssueDetails from "@/components/issue/IssueDetails";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Alpha Apartments | Issue Details",
+	title: "Unified Apartments | Issue Details",
 	description:
 		"Authenticated uses can get the details of the issue they have raised. They can also delete the issue",
 };

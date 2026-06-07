@@ -17,6 +17,11 @@ def get_user_username(instance: "Profile") -> str:
 
 
 class Profile(TimeStampedModel):
+    class Role(models.TextChoices):
+        AGENT = ("agent", _("Agent"))
+        TENANT = ("tenant", _("Tenant"))
+        REPAIR = ("repair", _("Repair staff"))
+
     class Gender(models.TextChoices):
         MALE = (
             "male",
@@ -66,6 +71,20 @@ class Profile(TimeStampedModel):
         )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        default=Role.TENANT,
+        db_index=True,
+    )
+    managed_by_agent = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="managed_repair_profiles",
+        verbose_name=_("Invited by agent"),
+    )
     avatar = CloudinaryField(verbose_name=_("Avatar"), blank=True, null=True)
     gender = models.CharField(
         verbose_name=_("Gender"),

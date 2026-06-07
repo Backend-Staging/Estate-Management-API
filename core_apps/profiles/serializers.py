@@ -21,6 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "slug",
+            "role",
             "first_name",
             "last_name",
             "username",

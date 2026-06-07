@@ -7,6 +7,14 @@ User = get_user_model()
 
 
 class Apartment(TimeStampedModel):
+    managed_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="managed_apartments",
+        verbose_name=_("Managing agent"),
+    )
     unit_number = models.CharField(
         max_length=10, unique=True, verbose_name=_("Unit Number")
     )
@@ -19,6 +27,11 @@ class Apartment(TimeStampedModel):
         blank=True,
         related_name="apartment",
         verbose_name=_("Tenant"),
+    )
+    tenant_verified_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("Tenant verified at"),
     )
 
     def __str__(self) -> str:

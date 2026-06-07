@@ -8,10 +8,10 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Alpha Apartments API",
+        title="Unified Apartments API",
         default_version="v1",
-        description="An Apartment Management API for Real Estate",
-        contact=openapi.Contact(email="api@enlighten-e.com"),
+        description="An Apartment Management API for Unified Apartments",
+        contact=openapi.Contact(email="api@unifiedapartments.com"),
         license=openapi.License(name="MIT License"),
     ),
     public=True,
@@ -29,6 +29,7 @@ urlpatterns = [
     path("api/v1/auth/", include("core_apps.users.urls")),
     path("api/v1/profiles/", include("core_apps.profiles.urls")),
     path("api/v1/apartments/", include("core_apps.apartments.urls")),
+    path("api/v1/agents/", include("core_apps.agents.urls")),
     path("api/v1/issues/", include("core_apps.issues.urls")),
     path("api/v1/reports/", include("core_apps.reports.urls")),
     path("api/v1/ratings/", include("core_apps.ratings.urls")),
@@ -36,6 +37,6 @@ urlpatterns = [
 ]
 
 
-admin.site.site_header = "Alpha Apartments Admin"
-admin.site.site_title = "Alpha Apartments Admin Portal"
-admin.site.index_title = "Welcome to Alpha Apartments Admin Portal"
+admin.site.site_header = "Unified Apartments Admin"
+admin.site.site_title = "Unified Apartments Admin Portal"
+admin.site.index_title = "Welcome to Unified Apartments Admin Portal"

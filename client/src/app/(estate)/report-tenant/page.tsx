@@ -3,7 +3,7 @@ import CreateReportForm from "@/components/forms/report-tenant/CreateReportForm"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Alpha Apartments | Report Tenant",
+	title: "Unified Apartments | Report Tenant",
 	description:
 		"Tenants can report their fellow tenants in cases of misconduct or misbehavior",
 };

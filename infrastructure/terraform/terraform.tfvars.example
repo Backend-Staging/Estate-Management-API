@@ -1,0 +1,26 @@
+# Copy to terraform.tfvars (gitignored) and adjust.
+# Lightsail regions: https://lightsail.aws.amazon.com/ — not every AWS region has it.
+
+aws_region   = "us-east-1"
+project_name = "estate-api"
+environment  = "staging"
+
+# Default is "${aws_region}a" if unset.
+# lightsail_az = "us-east-1b"
+
+# Optional: set to your own public key; if omitted, Terraform creates an ED25519 key (see sensitive outputs).
+# ssh_public_key = "ssh-ed25519 AAAA... you@host"
+
+# If `terraform plan` errors on blueprint/bundle, open Lightsail console and match IDs for your region.
+# instance_blueprint_id  = "docker"
+# instance_bundle_id     = "small_3_0"
+# database_blueprint_id  = "postgres_15"
+# database_bundle_id     = "micro_5_0"
+
+# If the instance cannot reach the DB with publicly_accessible=false, temporarily true and lock down in console,
+# or enable VPC peering between Lightsail and the DB (see AWS docs).
+# database_publicly_accessible = false
+
+tags = {
+  Owner = "your-team"
+}

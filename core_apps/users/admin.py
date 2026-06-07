@@ -22,7 +22,7 @@ class UserAdmin(BaseUserAdmin):
         "is_superuser",
     ]
     list_display_links = ["pkid", "id", "email", "username"]
-    search_fields = ["email", "first_name", "last_name"]
+    search_fields = ["email", "username", "first_name", "last_name"]
     ordering = ["pkid"]
     fieldsets = (
         (_("Login Credentials"), {"fields": ("email", "password")}),

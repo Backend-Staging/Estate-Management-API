@@ -10,4 +10,5 @@ def save_profile(backend, user, response, *args, **kwargs):
             upload_result = cloudinary.uploader.upload(avatar_url)
             profile, created = Profile.objects.get_or_create(user=user)
             profile.avatar = upload_result["public_id"]
+            profile.role = Profile.Role.TENANT
             profile.save()

@@ -21,7 +21,10 @@ class CanCreateEditPost(permissions.BasePermission):
             return True
 
         profile = getattr(user, "profile", None)
-        if profile and profile.occupation == Profile.Occupation.TENANT:
+        if profile and profile.role in (
+            Profile.Role.TENANT,
+            Profile.Role.AGENT,
+        ):
             return True
 
         return False

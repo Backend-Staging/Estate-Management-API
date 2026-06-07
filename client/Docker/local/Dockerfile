@@ -26,6 +26,8 @@ RUN \
 
 FROM base as node-run-stage
 
+RUN apk add --no-cache su-exec
+
 ARG APP_HOME=/app
 WORKDIR ${APP_HOME}
 
@@ -38,7 +40,10 @@ RUN addgroup -g 1001 -S nodejs && \
 
 RUN chown -R nextjs:nodejs ${APP_HOME}
 
-USER nextjs
+COPY Docker/local/entrypoint.sh /entrypoint.sh
+RUN sed -i 's/\r$//g' /entrypoint.sh && chmod +x /entrypoint.sh
 
-CMD [ "npm","run","dev" ]
+# Entrypoint runs as root, fixes /app/.next on the named volume, then su-exec to nextjs
+ENTRYPOINT ["/entrypoint.sh"]
+CMD [ "npm", "run", "dev" ]
 

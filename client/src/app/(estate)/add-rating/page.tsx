@@ -3,7 +3,7 @@ import { AuthFormHeader } from "@/components/forms/auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Alpha Apartments | Add Rating",
+	title: "Unified Apartments | Add Rating",
 	description:
 		"Tenants can rate the technicians, if they are satisfied or dissatisfied with the services rendered to them",
 };

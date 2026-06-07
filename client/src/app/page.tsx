@@ -1,13 +1,13 @@
-import buildings from "@/../public/assets/images/buildings.webp";
+import buildings from "@/../public/assets/images/modern-tall-glass-buildings-downtown.jpg";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import type { Metadata} from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-	title: "Home | Alpha Apartments",
+	title: "Home | Unified Apartments",
 	description:
-		"Alpha Apartments Home Page. Create your account to get started.",
+		"Unified Apartments Home Page. Create your account to get started.",
 	icons: {
 			icon: "favicon.ico", // Can also be a .png or .svg
 		  },
@@ -30,7 +30,7 @@ export default function HomePage() {
 			<main className="flex-center relative z-10 h-full bg-black/50">
 				<div className="text-center">
 					<h1 className="font-robotoSlab mb-4 text-4xl font-semibold text-cyan-400 antialiased sm:text-6xl md:text-8xl">
-						Welcome to Alpha Apartments
+						Welcome to Unified Apartments
 					</h1>
 					<p className="my-8 text-2xl text-teal-300 sm:text-4xl">
 						Are you a tenant? Or an existing tenant?

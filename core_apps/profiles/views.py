@@ -33,13 +33,13 @@ class ProfileListAPIView(generics.ListAPIView):
     object_label = "profiles"
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["user__username", "user__first_name", "user__last_name"]
-    filterset_fields = ["occupation", "gender", "country_of_origin"]
+    filterset_fields = ["occupation", "role", "gender", "country_of_origin"]
 
     def get_queryset(self) -> List[Profile]:
         return (
             Profile.objects.exclude(user__is_staff=True)
             .exclude(user__is_superuser=True)
-            .filter(occupation=Profile.Occupation.TENANT)
+            .filter(role=Profile.Role.TENANT)
         )
 
 
@@ -105,11 +105,11 @@ class NonTenantProfileListAPIView(generics.ListAPIView):
     object_label = "non_tenant_profiles"
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["user__username", "user__first_name", "user__last_name"]
-    filterset_fields = ["occupation", "gender", "country_of_origin"]
+    filterset_fields = ["occupation", "role", "gender", "country_of_origin"]
 
     def get_queryset(self) -> List[Profile]:
         return (
             Profile.objects.exclude(user__is_staff=True)
             .exclude(user__is_superuser=True)
-            .exclude(occupation=Profile.Occupation.TENANT)
+            .filter(role=Profile.Role.REPAIR)
         )

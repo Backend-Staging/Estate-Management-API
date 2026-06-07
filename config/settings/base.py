@@ -2,6 +2,7 @@ from pathlib import Path
 from os import path, getenv
 from dotenv import load_dotenv
 import cloudinary
+from celery.schedules import crontab
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,6 +53,7 @@ LOCAL_APPS = [
     "core_apps.reports",
     "core_apps.posts",
     "core_apps.apartments",
+    "core_apps.agents",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -186,7 +188,8 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_BEAT_SCHEDULE = {
     "update-reputations-every-day": {
         "task": "update_all_reputations",
-    }
+        "schedule": crontab(hour=0, minute=0),
+    },
 }
 
 

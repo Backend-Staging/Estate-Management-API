@@ -24,6 +24,9 @@ show-logs:
 show-logs-api:
 	docker compose -f local.yml logs api
 
+show-logs-client:
+	docker compose -f local.yml logs client
+
 makemigrations:
 	docker compose -f local.yml run --rm api python manage.py makemigrations
 
@@ -43,7 +46,7 @@ mailpit-volume:
 	docker volume inspect api_estate_prod_mailpit_data
 
 estate-db:
-	docker compose -f local.yml exec postgres psql --username=alphaogilo --dbname=estate
+	docker compose -f local.yml exec postgres psql --username=Unifiedogilo --dbname=estate
 
 test:
 	docker compose -f local.yml run --rm api pytest

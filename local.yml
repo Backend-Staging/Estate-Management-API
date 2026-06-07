@@ -14,10 +14,16 @@ services:
     expose:
       - "8000"
     env_file:
-      - ./.envs/.env.local
+      - .envs/.env.local/.django
+      - .envs/.env.local/.postgres
+    environment:
+      # watchfiles detects changes reliably on Docker Desktop bind mounts (uses polling).
+      - WATCHFILES_FORCE_POLLING=1
     depends_on:
-      - postgres
-      - mailpit
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
     command: /start
     networks:
       - estate_prod_nw
@@ -33,7 +39,14 @@ services:
     volumes:
       - estate_prod_postgres_data:/var/lib/postgresql/data
     env_file:
-      - ./.envs/.env.local
+      - ./.envs/.env.local/.postgres
+    # So api/celery start only after Postgres accepts connections (not just container start)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     networks:
       - estate_prod_nw
 
@@ -66,9 +79,12 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-    # add this line(uncomment it) so that hot module reloading can work when working with windows subsystem for linux. 
-    # environment:
-    #   - WATCHPACK_POLLING=true
+      # Keep Next's .next output off the bind mount (avoids corrupt webpack cache: ENOENT middleware-manifest, missing chunk *.js on Mac/Win Docker)
+      - client_next_dev:/app/.next
+    # Reliable hot reload via polling for bind mounts (Docker Desktop Mac/Win/WSL2).
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - estate_prod_nw
   
@@ -91,7 +107,7 @@ services:
     <<: *api
     image: estate_prod_celerybeat
     container_name: estate_prod_celerybeat
-    command: /start-celerybeat
+    command: "/start-celerybeat"
 
   flower:
     <<: *api
@@ -114,6 +130,7 @@ services:
       - logs_store:/var/log/nginx
     depends_on:
       - api
+      - client
     networks:
       - estate_prod_nw
 
@@ -127,4 +144,5 @@ volumes:
   estate_prod_mailpit_data: {}
   logs_store: {}
   estate_redis_prod_data: {}
+  client_next_dev: {}
   

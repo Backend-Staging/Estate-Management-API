@@ -3,7 +3,7 @@ import CreateIssueForm from "@/components/forms/report-issue/CreateIssueForm";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Alpha Apartments | Report Issue",
+	title: "Unified Apartments | Report Issue",
 	description:
 		"Tenants can report any issues to the management with regards to their apartments",
 };

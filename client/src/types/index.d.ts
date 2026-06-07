@@ -289,6 +289,7 @@ export interface UserResponse {
 	slug: string;
 	full_name: string;
 	gender: string;
+	role: "agent" | "tenant" | "repair" | null;
 	occupation: string;
 	phone_number: string;
 	country: string;
@@ -341,6 +342,7 @@ export interface SocialAuthResponse {
 export interface Profile {
 	id: string;
 	slug: string;
+	role: "agent" | "tenant" | "repair";
 	first_name: string;
 	last_name: string;
 	username: string;
