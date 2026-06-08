@@ -11,12 +11,18 @@ class ApartmentSerializer(serializers.ModelSerializer):
         exclude = ["pkid", "updated_at"]
 
 
-class ApartmentCreateForAgentSerializer(serializers.ModelSerializer):
-    """Create listing: managed_by is set in the view."""
+class ApartmentCreateSerializer(serializers.ModelSerializer):
+    """Create a unit (agent listing or tenant self-registration)."""
 
     class Meta:
         model = Apartment
         fields = ("unit_number", "building", "floor")
+
+
+class ApartmentCreateForAgentSerializer(ApartmentCreateSerializer):
+    """Backward-compatible alias for agent create serializer."""
+
+    pass
 
 
 class ApartmentManagedUpdateSerializer(serializers.ModelSerializer):

@@ -87,6 +87,7 @@ def technician_user(db):
         user=user,
         gender=Profile.Gender.MALE,
         occupation=Profile.Occupation.PLUMBER,
+        role=Profile.Role.REPAIR,
     )
     return user
 

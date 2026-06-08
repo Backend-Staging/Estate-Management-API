@@ -6,32 +6,43 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Spinner from "@/components/shared/Spinner";
 
+function AuthLoading() {
+	return (
+		<div className="flex-center pt-32">
+			<Spinner size="xl" />
+		</div>
+	);
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const [isLoading, setIsLoading] = useState(true);
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
-		const handleAuthState = async () => {
-			const isLoggedIn = getCookie("logged_in") === "true";
+		setMounted(true);
+	}, []);
 
-			if (isLoggedIn) {
-				dispatch(setAuth());
-			} else {
-				dispatch(setLogout());
-				router.push("/login");
-			}
-			setIsLoading(false);
-		};
-		handleAuthState();
-	}, [dispatch, router]);
+	const isLoggedIn = mounted && getCookie("logged_in") === "true";
 
-	if (isLoading) {
-		return (
-			<div className="flex-center pt-32">
-				<Spinner size="xl" />
-			</div>
-		);
+	useEffect(() => {
+		if (!mounted) {
+			return;
+		}
+		if (isLoggedIn) {
+			dispatch(setAuth());
+			return;
+		}
+		dispatch(setLogout());
+		router.push("/login");
+	}, [dispatch, router, isLoggedIn, mounted]);
+
+	if (!mounted) {
+		return <AuthLoading />;
+	}
+
+	if (!isLoggedIn) {
+		return <AuthLoading />;
 	}
 
 	return <>{children}</>;

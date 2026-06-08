@@ -14,8 +14,8 @@ export const ProfileItem: React.FC<ProfileItemProps> = ({
 	<div className="flex items-center space-x-2">
 		{icon}
 		<span className="font-semibold">
-			<span className="tab-font">{label}:</span>
-			<span className="dark:text-babyPowder">{value}</span>
+			<span className="tab-font">{label}:</span>{" "}
+			<span className="dark:text-babyPowder font-normal">{value}</span>
 		</span>
 	</div>
 );

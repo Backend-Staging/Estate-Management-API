@@ -34,6 +34,8 @@ def set_auth_cookies(
 
     logged_in_cookie_settings = cookie_settings.copy()
     logged_in_cookie_settings["httponly"] = False
+    if refresh_token:
+        logged_in_cookie_settings["max_age"] = refresh_token_lifetime
     response.set_cookie("logged_in", "true", **logged_in_cookie_settings)
 
 

@@ -1,7 +1,6 @@
 from typing import List
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
-from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework import status
@@ -52,10 +51,8 @@ class ProfileDetailAPIView(generics.RetrieveAPIView):
         return Profile.objects.select_related("user").all()
 
     def get_object(self) -> Profile:
-        try:
-            return Profile.objects.get(user=self.request.user)
-        except Profile.DoesNotExist:
-            raise Http404("Profile not found")
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        return profile
 
 
 class ProfileUpdateAPIView(generics.RetrieveUpdateAPIView):

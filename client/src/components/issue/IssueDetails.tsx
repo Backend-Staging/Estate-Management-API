@@ -9,6 +9,7 @@ import { extractErrorMessage } from "@/utils";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
+import MaintenanceTriagePanel from "@/components/ai/MaintenanceTriagePanel";
 import {
 	Card,
 	CardContent,
@@ -117,7 +118,11 @@ export default function IssueDetails({ params }: IssueDetailsProps) {
 					</div>
 				</CardDescription>
 			</CardContent>
-
+			{issue?.id && (
+				<CardContent className="border-b-eerieBlack border-b">
+					<MaintenanceTriagePanel issueId={issue.id} />
+				</CardContent>
+			)}
 			<CardFooter className="mt-2 flex flex-row justify-between dark:text-lime-500">
 				<p className="text-lg">
 					assigned to:

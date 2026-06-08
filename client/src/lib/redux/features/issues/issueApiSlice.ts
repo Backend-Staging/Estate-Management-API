@@ -23,7 +23,7 @@ export const issueApiSlice = baseApiSlice.injectEndpoints({
 			providesTags: ["Issue"],
 		}),
 		getMyAssignedIssues: builder.query<MyAssignedIssuesResponse, string>({
-			query: () => "/issues/assigned/",
+			query: (userId) => `/issues/assigned/${userId}/`,
 			providesTags: ["Issue"],
 		}),
 		getSingleIssue: builder.query<IssueResponse, string>({

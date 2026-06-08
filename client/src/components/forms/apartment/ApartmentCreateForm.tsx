@@ -38,7 +38,9 @@ export default function ApartmentCreateForm() {
 	const onSubmit = async (values: z.infer<typeof apartmentCreateSchema>) => {
 		try {
 			await createApartment(values).unwrap();
-			toast.success("Apartment Added");
+			toast.success(
+				"Apartment added. Your agent must verify your tenancy before you can report issues.",
+			);
 			router.push("/profile");
 			reset();
 		} catch (error) {
@@ -83,7 +85,10 @@ export default function ApartmentCreateForm() {
 							{...field}
 							id="floor"
 							type="number"
-							onChange={(e) => field.onChange(parseInt(e.target.value))}
+							onChange={(e) => {
+								const val = parseInt(e.target.value, 10);
+								field.onChange(Number.isNaN(val) ? 0 : val);
+							}}
 							className="flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 						/>
 					)}

@@ -1,37 +1,48 @@
 from django.http import Http404
-from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.request import Request
-from rest_framework.response import Response
+from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from core_apps.common.permissions import IsAgentOrPlatformAdmin
+from core_apps.common.permissions import IsAgentOrPlatformAdmin, user_is_agent, user_is_tenant
 from core_apps.common.renderers import GenericJSONRenderer
-from core_apps.profiles.models import Profile
 
 from .models import Apartment
 from .serializers import (
-    ApartmentCreateForAgentSerializer,
+    ApartmentCreateSerializer,
     ApartmentManagedUpdateSerializer,
     ApartmentSerializer,
 )
 
 
 class ApartmentCreateAPIView(generics.CreateAPIView):
-    """Agents (or platform admin) create listings for units they manage."""
+    """
+    Agents create managed listings (no tenant yet).
+    Tenants register their unit and are linked as tenant (pending agent verification).
+    """
 
     queryset = Apartment.objects.all()
-    serializer_class = ApartmentCreateForAgentSerializer
-    permission_classes = [IsAgentOrPlatformAdmin]
+    serializer_class = ApartmentCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [GenericJSONRenderer]
     object_label = "apartment"
 
-    def perform_create(self, serializer: ApartmentCreateForAgentSerializer) -> None:
-        profile = getattr(self.request.user, "profile", None)
-        if not (
-            self.request.user.is_superuser or self.request.user.is_staff
-        ) and not (profile and profile.role == Profile.Role.AGENT):
-            raise PermissionDenied("Only property agents can create apartment listings.")
-        serializer.save(managed_by=self.request.user)
+    def perform_create(self, serializer: ApartmentCreateSerializer) -> None:
+        user = self.request.user
+
+        if user_is_agent(user):
+            serializer.save(managed_by=user)
+            return
+
+        if not user_is_tenant(user):
+            raise PermissionDenied(
+                "Only tenants or property agents can register an apartment."
+            )
+
+        if user.apartment.exists():
+            raise ValidationError(
+                {"detail": "You already have an apartment registered."}
+            )
+
+        serializer.save(tenant=user, tenant_verified_at=None)
 
 
 class ApartmentManagedListAPIView(generics.ListAPIView):
@@ -48,7 +59,7 @@ class ApartmentManagedListAPIView(generics.ListAPIView):
 
 
 class ApartmentManagedUpdateAPIView(generics.RetrieveUpdateAPIView):
-    """Agent: update unit, set tenant, set tenant_verified_at."""
+    """Agent: update unit info, set tenant, set tenant_verified_at."""
 
     lookup_field = "id"
     lookup_url_kwarg = "id"
@@ -75,10 +86,7 @@ class ApartmentDetailAPIView(generics.RetrieveAPIView):
     object_label = "apartment"
 
     def get_object(self) -> Apartment:
-        apartments = self.request.user.apartment.all()
-        obj = apartments.first()
+        obj = self.request.user.apartment.first()
         if obj is None:
             raise Http404("Apartment not found")
-        if obj.tenant_verified_at is None:
-            raise PermissionDenied("Your tenancy is not verified by your agent yet.")
         return obj

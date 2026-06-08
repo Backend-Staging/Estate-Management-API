@@ -1,9 +1,24 @@
 "use client";
 
-import { useAppSelector } from "@/lib/redux/hooks/typedHooks";
+import { setAuth, setLogout } from "@/lib/redux/features/auth/authSlice";
 import { useGetUserProfileQuery } from "@/lib/redux/features/users/usersApiSlice";
+import { useAppDispatch } from "@/lib/redux/hooks/typedHooks";
+import { clearAuthSession } from "@/utils/clearAuthSession";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+function GateLoading() {
+	return (
+		<div className="text-platinum flex min-h-[40vh] items-center justify-center text-sm">
+			Loading...
+		</div>
+	);
+}
+
+function isAuthError(status: unknown): boolean {
+	return status === 401 || status === 403;
+}
 
 /**
  * Agent-only routes. Others go to the main app (or login if anonymous).
@@ -14,35 +29,68 @@ export default function AgentPortalGate({
 	children: React.ReactNode;
 }) {
 	const router = useRouter();
-	const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
-	const { data: profile, isLoading, isFetching, isError } =
-		useGetUserProfileQuery(undefined, { skip: !isAuthenticated });
+	const dispatch = useAppDispatch();
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
-		if (!isAuthenticated) {
-			router.replace("/login?next=/agent/dashboard");
+		setMounted(true);
+	}, []);
+
+	const isLoggedIn = mounted && getCookie("logged_in") === "true";
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			dispatch(setAuth());
 		}
-	}, [isAuthenticated, router]);
+	}, [dispatch, isLoggedIn]);
+
+	const { data, isLoading, isError, error } = useGetUserProfileQuery(undefined, {
+		skip: !isLoggedIn,
+	});
+	const role = data?.profile?.role;
+	const awaitingProfile = isLoggedIn && isLoading && !data;
 
 	useEffect(() => {
-		if (!isAuthenticated || isLoading || isFetching) return;
-		if (isError || (profile && profile.role !== "agent")) {
+		if (!mounted) {
+			return;
+		}
+		if (!isLoggedIn) {
+			router.replace("/login?next=/agent/dashboard");
+			return;
+		}
+		if (isError && error && "status" in error && isAuthError(error.status)) {
+			clearAuthSession();
+			dispatch(setLogout());
+			router.replace("/login?next=/agent/dashboard");
+			return;
+		}
+		if (isLoading || !data) {
+			return;
+		}
+		if (isError || role !== "agent") {
 			router.replace("/welcome");
 		}
-	}, [isAuthenticated, isLoading, isFetching, isError, profile, router]);
+	}, [mounted, isLoggedIn, isLoading, data, isError, error, role, router, dispatch]);
 
-	if (!isAuthenticated) {
+	if (!mounted) {
+		return <GateLoading />;
+	}
+
+	if (!isLoggedIn) {
 		return null;
 	}
-	if (isLoading || isFetching) {
-		return (
-			<div className="text-platinum flex min-h-[40vh] items-center justify-center text-sm">
-				Loading…
-			</div>
-		);
+
+	if (awaitingProfile) {
+		return <GateLoading />;
 	}
-	if (profile && profile.role !== "agent") {
+
+	if (isError && error && "status" in error && isAuthError(error.status)) {
+		return <GateLoading />;
+	}
+
+	if (isError || role !== "agent") {
 		return null;
 	}
+
 	return <>{children}</>;
 }

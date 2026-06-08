@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "core_apps.posts",
     "core_apps.apartments",
     "core_apps.agents",
+    "core_apps.ai_assistant",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
