@@ -1,3 +1,73 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+staticfiles/
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Environment files
+.env
+.env.*
+.envrc
+.envs/*
+!.envs/
+!.envs/.env.example
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Node / Next.js
+client/node_modules/
+client/.next/
+client/out/
+client/build/
+client/coverage/
+client/.env*.local
+client/.vercel/
+client/*.tsbuildinfo
+client/next-env.d.ts
+
+# Terraform
+.terraform/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# Docker/local
+*.pid
+
+
+
+
+
 .vscode
 .idea
 .DS_Store
