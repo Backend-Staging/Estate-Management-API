@@ -1,413 +1,210 @@
 # CyberSys Architecture
 
-# Overview
-
-CyberSys is a cloud-native AI-powered estate management platform designed to demonstrate scalable full-stack engineering, backend automation, AI workflow orchestration, and production deployment architecture.
-
-The system separates frontend presentation, backend APIs, AI processing, infrastructure services, and background workflows into clearly defined layers to improve scalability, maintainability, and deployment flexibility.
-
----
-
-# High-Level Architecture
-
-```txt
-                          ┌─────────────────────┐
-                          │      Client App     │
-                          │      Next.js        │
-                          │   Hosted on Vercel  │
-                          └──────────┬──────────┘
-                                     │
-                                     ▼
-                          ┌─────────────────────┐
-                          │     API Gateway     │
-                          │ NGINX / Cloud Proxy │
-                          └──────────┬──────────┘
-                                     │
-                                     ▼
-                    ┌────────────────────────────────┐
-                    │ Django REST Framework Backend  │
-                    │                                │
-                    │ - Authentication               │
-                    │ - Tenant Management            │
-                    │ - Maintenance Requests         │
-                    │ - Reporting                    │
-                    │ - Notifications                │
-                    │ - AI Integration Layer         │
-                    └──────────┬──────────┬──────────┘
-                               │          │
-                               ▼          ▼
-                    ┌──────────────┐  ┌──────────────┐
-                    │ PostgreSQL   │  │ Redis Cache  │
-                    │ Primary DB   │  │ + Queue       │
-                    └──────┬───────┘  └──────┬───────┘
-                           │                 │
-                           ▼                 ▼
-                    ┌──────────────┐  ┌──────────────┐
-                    │ Celery       │  │ AI Services  │
-                    │ Background   │  │ Layer        │
-                    │ Workers      │  │              │
-                    └──────────────┘  └──────────────┘
-```
-
----
-
-# Frontend Architecture
-
-## Technology
-
-* Next.js
-* React
-* TypeScript
-* Axios/API integration
-* TailwindCSS (future)
-* Zustand or Context API (future)
-
-## Responsibilities
-
-The frontend is responsible for:
-
-* User interface rendering
-* Tenant dashboards
-* Staff dashboards
-* Authentication workflows
-* Request submission
-* Real-time notifications
-* AI assistant interaction
-* Analytics visualization
-
-## Hosting Strategy
-
-### Recommended
-
-* Vercel
-
-### Reason
-
-Vercel provides:
-
-* Global CDN
-* Edge optimization
-* Fast deployments
-* Automatic scaling
-* GitHub integration
-* Excellent Next.js support
-
----
-
-# Backend Architecture
-
-## Technology
-
-* Python
-* Django
-* Django REST Framework
-
-## Responsibilities
-
-The backend handles:
-
-* Authentication
-* Authorization
-* API management
-* Business logic
-* Database operations
-* AI orchestration
-* Notification handling
-* Task scheduling
-* Workflow processing
-
-## Core Backend Modules
-
-```txt
-core_apps/
-├── users/
-├── apartments/
-├── issues/
-├── reports/
-├── ratings/
-├── profiles/
-├── notifications/
-└── ai_assistant/
-```
-
----
-
-# AI Services Architecture
-
 ## Overview
 
-CyberSys introduces a dedicated AI layer for intelligent operational workflows.
+CyberSys is an AI-powered estate management platform designed to demonstrate full-stack engineering, backend system design, AI workflow integration, and cloud deployment readiness.
 
-## AI Components
-
-### AI Maintenance Triage
-
-Classifies maintenance requests by:
-
-* Category
-* Urgency
-* Emergency level
-* Department routing
-
-### RAG Knowledge Assistant
-
-Retrieves information from:
-
-* Lease agreements
-* Property policies
-* Maintenance documentation
-* HOA guidelines
-
-### AI Work Order Assistant
-
-Generates:
-
-* Summaries
-* Recommendations
-* Escalation suggestions
-* Tenant communication drafts
+The platform is built around a monorepo structure that separates the frontend, backend, AI services, infrastructure, and documentation while keeping the project easy to run, review, and deploy.
 
 ---
 
-# AI Service Structure
+## High-Level System Design
 
-```txt
-core_apps/ai_assistant/
-├── services/
-│   ├── triage_service.py
-│   ├── rag_service.py
-│   ├── prompt_builder.py
-│   ├── recommendation_engine.py
-│   └── analytics_service.py
-│
-├── views.py
-├── serializers.py
-├── urls.py
-└── models.py
+```
+User
+  |
+  v
+Next.js Client Application
+  |
+  v
+Django REST Framework API
+  |
+  +--> PostgreSQL
+  +--> Redis
+  +--> Celery Workers
+  +--> AI Assistant Services
 ```
 
 ---
 
-# Database Architecture
+## Application Layers
 
-## Primary Database
+### Frontend Layer
 
-* PostgreSQL
+The frontend is built with Next.js and React. It provides:
 
-## Responsibilities
+- Tenant profile pages
+- Issue creation and tracking
+- Staff issue management
+- AI triage interface
+- Reports and posts
+- Role-based user experience
 
-* User records
-* Tenant information
-* Maintenance requests
-* Notifications
-* Reports
-* AI request logs
-* Operational metrics
+### Backend Layer
 
-## Future Enhancements
+The backend is built with Django and Django REST Framework. It handles:
 
-* Read replicas
-* Partitioning
-* Multi-tenant isolation
-* Database sharding
+- Authentication
+- User profiles
+- Apartment management
+- Issue workflows
+- Reports
+- Ratings
+- Notifications
+- AI workflow orchestration
 
----
+### AI Services Layer
 
-# Redis Architecture
+The AI services layer is responsible for:
 
-## Responsibilities
+- Maintenance issue triage
+- AI-generated summaries
+- Staff recommendations
+- Emergency detection
+- Future RAG-powered property assistance
 
-Redis is used for:
+### Data Layer
 
-* Celery message broker
-* Caching layer
-* Rate limiting
-* Temporary AI memory
-* Session optimization
-* Queue management
+CyberSys uses PostgreSQL as the primary relational database for:
 
-## Benefits
+- Users
+- Profiles
+- Apartments
+- Issues
+- Reports
+- Ratings
+- AI triage records
 
-* Low-latency access
-* Faster API response times
-* Reduced database load
-* Improved scalability
+### Queue and Cache Layer
 
----
+**Redis** supports:
 
-# Celery Background Processing
+- Celery task queue
+- Caching
+- Short-lived workflow state
+- Background processing
 
-## Responsibilities
+**Celery** supports:
 
-Celery handles:
-
-* Email notifications
-* AI processing jobs
-* Report generation
-* Scheduled workflows
-* Analytics processing
-* Escalation workflows
-
-## Monitoring
-
-* Flower dashboard
-
----
-
-# Deployment Architecture
-
-# Recommended MVP Deployment
-
-## Frontend
-
-* Vercel
-
-## Backend
-
-* Google Cloud Run
-  or
-* AWS EC2
-
-## Database
-
-* Cloud SQL PostgreSQL
-  or
-* AWS RDS PostgreSQL
-
-## Redis
-
-* Memorystore
-  or
-* ElastiCache
-
-## Storage
-
-* Cloud Storage
-  or
-* Amazon S3
+- Email notifications
+- Future AI background processing
+- Report workflows
+- Scheduled tasks
 
 ---
 
-# Infrastructure Workflow
+## Monorepo Strategy
 
-```txt
-GitHub Push
-      │
-      ▼
-CI/CD Pipeline
-      │
-      ▼
-Docker Build
-      │
-      ▼
-Container Registry
-      │
-      ▼
-Cloud Deployment
-      │
-      ▼
-Running Services
+CyberSys currently uses a monorepo structure:
+
 ```
-
----
-
-# Monorepo Strategy
-
-CyberSys currently uses a monorepo architecture.
-
-## Reasoning
-
-This allows:
-
-* Easier local development
-* Unified deployments
-* Shared documentation
-* Simplified Docker orchestration
-* Faster iteration speed
-* Centralized infrastructure management
-
-## Repository Structure
-
-```txt
-CyberSys/
+Estate-Management-API/
 ├── client/
-├── core_apps/
 ├── config/
+├── core_apps/
 ├── docker/
-├── infra/
-├── requirements/
 ├── docs/
-└── README.md
+├── infrastructure/
+├── requirements/
+├── README.md
+└── local.yml
+```
+
+This keeps the project easy to review as a complete AI engineering system while still separating frontend, backend, documentation, and infrastructure concerns.
+
+---
+
+## Current Core Domains
+
+### Users and Profiles
+
+Manages authentication, user roles, profile data, occupations, reputation, and user identity.
+
+### Apartments
+
+Manages apartment units, buildings, tenants, and property relationships.
+
+### Issues
+
+Supports maintenance issue creation, tracking, assignment, updates, deletion, and staff workflows.
+
+### Reports
+
+Allows users to submit reports and view their report history.
+
+### AI Assistant
+
+Adds intelligent workflows on top of maintenance requests, starting with issue triage.
+
+---
+
+## AI Maintenance Triage Flow
+
+```
+Tenant creates issue
+  |
+  v
+Issue is stored in PostgreSQL
+  |
+  v
+AI triage endpoint receives issue ID
+  |
+  v
+Backend retrieves Issue model
+  |
+  v
+AI service analyzes title, description, priority, status, and apartment context
+  |
+  v
+AI result is stored as an AITriageRequest
+  |
+  v
+Frontend displays category, urgency, department, summary, and recommendation
 ```
 
 ---
 
-# Scalability Roadmap
+## Scalability Path
 
-## Phase 1
+### Stage 1 — Local Development
 
-* Monolithic backend
-* Single PostgreSQL instance
-* Single Redis instance
-* Docker Compose deployment
+- Docker Compose
+- Django API
+- Next.js client
+- PostgreSQL
+- Redis
+- Celery
+- Mailpit
+- Flower
 
-## Phase 2
+### Stage 2 — MVP Deployment
 
-* Separate worker containers
-* Cloud-managed PostgreSQL
-* Cloud-managed Redis
-* Load-balanced backend
+- Vercel for frontend
+- GCP Cloud Run or AWS EC2 for backend
+- Managed PostgreSQL
+- Managed Redis
+- Object storage for uploads
 
-## Phase 3
+### Stage 3 — Production SaaS
 
-* Kubernetes deployment
-* Horizontal scaling
-* Event-driven architecture
-* Distributed AI processing
-* Multi-tenant SaaS isolation
-
----
-
-# Future Infrastructure Expansion
-
-Planned infrastructure additions:
-
-* Kubernetes
-* Terraform
-* Kafka
-* Prometheus
-* Grafana
-* Istio
-* Vault
-* Distributed tracing
-* AI observability
+- Load-balanced API services
+- Managed database replicas
+- Dedicated worker services
+- AI background jobs
+- Observability stack
+- Role-based multi-tenant architecture
 
 ---
 
-# Security Architecture
+## Engineering Value
 
-## Planned Features
+CyberSys demonstrates:
 
-* JWT authentication
-* RBAC permissions
-* API throttling
-* Secure environment variables
-* Audit logging
-* AI moderation safeguards
-* Prompt injection protection
-* HTTPS enforcement
-
----
-
-# Engineering Goals
-
-CyberSys is designed to demonstrate:
-
-* AI engineering
-* Backend systems design
-* Cloud architecture
-* Infrastructure automation
-* Distributed workflows
-* Production deployment
-* SaaS engineering patterns
-* Real-world operational AI systems
+- Full-stack SaaS architecture
+- Django REST API design
+- Next.js frontend architecture
+- Redux Toolkit and RTK Query state management
+- AI workflow integration
+- Dockerized local development
+- Redis and Celery background processing
+- Cloud deployment planning
