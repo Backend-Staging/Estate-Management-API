@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	background-color: hsl(var(--background));
+	color: hsl(var(--foreground));
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+	--select-background-color: #f8fafc;
+	--select-border-color: #cbd5e1;
+	--select-text-color: #0f172a;
+	--select-border-hover-color: #94a3b8;
+	--select-option-selected-background-color: #0891b2;
+	--select-option-background-color: #ffffff;
+	--select-option-text-color: #0f172a;
+	--select-option-hover-background-color: #e2e8f0;
+	--select-value-text-color: #0f172a;
+	--select-menu-background-color: #f8fafc;
+}
+
+.dark {
+	--select-background-color: #1e293b;
+	--select-border-color: #475569;
+	--select-text-color: #f1f5f9;
+	--select-border-hover-color: #64748b;
+	--select-option-selected-background-color: #0891b2;
+	--select-option-background-color: #1e293b;
+	--select-option-text-color: #f1f5f9;
+	--select-option-hover-background-color: #334155;
+	--select-value-text-color: #f1f5f9;
+	--select-menu-background-color: #1e293b;
+}
+
+.lucide-chevron-down {
+	background: transparent;
+	color: inherit;
+}
+.lucide-x-square {
+	background: transparent;
+	color: inherit;
+}
+
+@layer base {
+	:root {
+		--background: 210 40% 98%;
+		--foreground: 222 47% 11%;
+		--card: 0 0% 100%;
+		--card-foreground: 222 47% 11%;
+		--primary: 188 94% 37%;
+		--primary-foreground: 0 0% 100%;
+		--muted: 210 40% 96%;
+		--muted-foreground: 215 16% 47%;
+		--border: 214 32% 91%;
+		--ring: 188 94% 37%;
+	}
+
+	.dark {
+		--background: 222 47% 7%;
+		--foreground: 210 40% 98%;
+		--card: 217 33% 12%;
+		--card-foreground: 210 40% 98%;
+		--primary: 188 85% 45%;
+		--primary-foreground: 222 47% 7%;
+		--muted: 217 33% 17%;
+		--muted-foreground: 215 20% 65%;
+		--border: 217 33% 20%;
+		--ring: 188 85% 45%;
+	}
+}
+
+@layer utilities {
+	.textarea-dark {
+		@apply dark:text-slate-100;
+	}
+
+	.auth-nav {
+		@apply hover:bg-brand-500/10 hover:text-brand-700 dark:hover:text-brand-300;
+	}
+
+	.text-xl-font-baby {
+		@apply text-xl font-semibold text-ink dark:text-slate-100;
+	}
+	.text-lg-font-baby {
+		@apply text-lg font-medium text-ink dark:text-slate-200;
+	}
+
+	.tab-icon {
+		@apply size-5 text-brand-600 dark:text-brand-400;
+	}
+	.card-icon {
+		@apply size-5 text-brand-600 dark:text-brand-400;
+	}
+	.post-icon {
+		@apply size-5 text-brand-600 dark:text-brand-400;
+	}
+
+	.tab-font {
+		@apply pr-1 font-semibold text-ink dark:text-slate-100;
+	}
+
+	/* Legacy gradient utilities — toned down for professional surfaces */
+	.electricIndigo-gradient {
+		@apply bg-brand-600 text-white hover:bg-brand-700;
+	}
+	.electricIndigo-gradient-r {
+		@apply bg-brand-600 text-white;
+	}
+	.lime-gradient {
+		@apply bg-teal-600 text-white hover:bg-teal-700;
+	}
+	.pumpkin-gradient {
+		@apply bg-cyan-600 text-white hover:bg-cyan-700;
+	}
+
+	.class-active {
+		filter: brightness(0) saturate(100%) invert(45%) sepia(90%) saturate(1200%)
+			hue-rotate(160deg) brightness(95%) contrast(95%);
+	}
+
+	.bg-baby_rich {
+		@apply bg-surface-muted dark:bg-slate-900;
+	}
+	.bg-baby_eerie {
+		@apply bg-surface-muted dark:bg-slate-900;
+	}
+	.bg-baby_veryBlack {
+		@apply bg-surface-muted dark:bg-slate-950;
+	}
+	.text-baby_veryBlack {
+		@apply text-ink dark:text-slate-100;
+	}
+	.text-baby_richBlack {
+		@apply text-ink dark:text-slate-100;
+	}
+
+	.search-text {
+		@apply text-[15px] font-normal leading-snug;
+	}
+	.no-focus {
+		@apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+	}
+
+	.text-baby_ballon {
+		@apply text-ink dark:text-slate-100;
+	}
+
+	.tab {
+		@apply min-h-full rounded-md bg-transparent text-ink-muted data-[state=active]:bg-white data-[state=active]:text-brand-700 data-[state=active]:shadow-sm dark:text-slate-400 dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-brand-300 !important;
+	}
+
+	.color-invert {
+		@apply dark:invert-0;
+	}
+
+	.base-medium {
+		@apply text-[15px] font-medium leading-snug;
+	}
+	.base-semibold {
+		@apply text-[15px] font-semibold leading-snug;
+	}
+	.base-bold {
+		@apply text-[15px] font-bold leading-snug;
+	}
+
+	.flex-row-center {
+		@apply flex flex-row items-center;
+	}
+	.flex-center {
+		@apply flex items-center justify-center;
+	}
+	.flex-col-center {
+		@apply flex-col items-center justify-center;
+	}
+	.flex-between {
+		@apply flex items-center justify-between;
+	}
+	.flex-start {
+		@apply flex items-center justify-start;
+	}
+
+	.h1-bold {
+		@apply text-3xl font-bold tracking-tight;
+	}
+	.h2-bold {
+		@apply text-2xl font-bold tracking-tight;
+	}
+	.h2-semibold {
+		@apply text-2xl font-semibold tracking-tight;
+	}
+	.h3-bold {
+		@apply text-xl font-bold;
+	}
+	.h3-semibold {
+		@apply text-lg font-semibold;
+	}
+	.h4-bold {
+		@apply text-base font-bold;
+	}
+	.h4-semibold {
+		@apply text-base font-semibold;
+	}
+	.body-semibold {
+		@apply text-sm font-semibold;
+	}
+	.small-medium {
+		@apply text-sm font-medium;
+	}
+
+	.light-border {
+		@apply border-surface-border dark:border-slate-700;
+	}
+	.light-border-2 {
+		@apply border-slate-300 dark:border-slate-600 !important;
+	}
+	.btn-tertiary {
+		@apply bg-white dark:bg-slate-800 !important;
+	}
+
+	.invert-colors {
+		@apply dark:invert-0;
+	}
+
+	.custom-scrollbar::-webkit-scrollbar {
+		width: 4px;
+		height: 4px;
+	}
+	.custom-scrollbar::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		background: #cbd5e1;
+		border-radius: 4px;
+	}
+	.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+		background: #475569;
+	}
+}
