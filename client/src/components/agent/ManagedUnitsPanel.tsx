@@ -14,7 +14,9 @@ export default function ManagedUnitsPanel() {
 	const [updateApartment, { isLoading: isUpdating }] =
 		useUpdateManagedApartmentMutation();
 
-	const apartments = data?.apartments ?? [];
+	const apartments = Array.isArray(data?.apartments)
+		? data.apartments
+		: (data?.apartments?.results ?? []);
 
 	const handleVerify = async (id: string) => {
 		try {

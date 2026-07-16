@@ -15,8 +15,12 @@ export default function AgentIssuesPanel() {
 	const { data: staffData } = useGetRepairStaffQuery();
 	const [updateIssue, { isLoading: isUpdating }] = useUpdateIssueMutation();
 
-	const issues = Array.isArray(data?.issues) ? data.issues : [];
-	const staff = staffData?.repair_staff ?? [];
+	const issues = Array.isArray(data?.issues)
+		? data.issues
+		: (data?.issues?.results ?? []);
+	const staff = Array.isArray(staffData?.repair_staff)
+		? staffData.repair_staff
+		: (staffData?.repair_staff?.results ?? []);
 
 	const assignStaff = async (issueId: string, assignedTo: string) => {
 		try {

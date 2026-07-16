@@ -34,7 +34,9 @@ export default function MaintenanceStaffPanel() {
 		assigned_building: BUILDINGS[0],
 	});
 
-	const staff = data?.repair_staff ?? [];
+	const staff = Array.isArray(data?.repair_staff)
+		? data.repair_staff
+		: (data?.repair_staff?.results ?? []);
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();

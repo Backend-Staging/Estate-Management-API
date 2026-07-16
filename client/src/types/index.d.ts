@@ -239,7 +239,14 @@ export interface UpdateIssueData extends IssueStatusData {
 	assigned_to?: string;
 }
 export interface AgentIssuesResponse {
-	issues: Issue[];
+	issues:
+		| Issue[]
+		| {
+				count: number;
+				next?: string | null;
+				previous?: string | null;
+				results: Issue[];
+		  };
 }
 
 export interface MyIssuesResponse {
@@ -289,7 +296,14 @@ export interface ManagedApartment {
 }
 
 export interface ManagedApartmentsResponse {
-	apartments: ManagedApartment[];
+	apartments:
+		| ManagedApartment[]
+		| {
+				count: number;
+				next?: string | null;
+				previous?: string | null;
+				results: ManagedApartment[];
+		  };
 }
 
 export interface ManagedApartmentUpdateData {
@@ -332,7 +346,14 @@ export interface RepairStaffProfile {
 }
 
 export interface RepairStaffListResponse {
-	repair_staff: RepairStaffProfile[];
+	repair_staff:
+		| RepairStaffProfile[]
+		| {
+				count: number;
+				next?: string | null;
+				previous?: string | null;
+				results: RepairStaffProfile[];
+		  };
 }
 
 export interface LeftNavLink {
