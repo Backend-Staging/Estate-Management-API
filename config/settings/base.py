@@ -285,3 +285,10 @@ AUTHENTICATION_BACKENDS = [
     "social_core.backends.google.GoogleOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+# AI provider configuration (rules fallback when no API key is set)
+AI_PROVIDER = getenv("AI_PROVIDER", "rules")
+OPENAI_API_KEY = getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = getenv("OPENAI_MODEL", "gpt-4o-mini")
+GEMINI_API_KEY = getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = getenv("GEMINI_MODEL", "gemini-1.5-flash")

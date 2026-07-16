@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
 import MaintenanceTriagePanel from "@/components/ai/MaintenanceTriagePanel";
+import WorkOrderAssistantPanel from "@/components/ai/WorkOrderAssistantPanel";
 import {
 	Card,
 	CardContent,
@@ -115,6 +116,11 @@ export default function IssueDetails({ params }: IssueDetailsProps) {
 			{issue?.id && (
 				<CardContent className="border-b border-surface-border p-6 dark:border-slate-700">
 					<MaintenanceTriagePanel issueId={issue.id} />
+				</CardContent>
+			)}
+			{issue?.id && canUpdate && (
+				<CardContent className="border-b border-surface-border p-6 dark:border-slate-700">
+					<WorkOrderAssistantPanel issueId={issue.id} />
 				</CardContent>
 			)}
 			<CardFooter className="flex flex-col gap-3 p-6 text-sm text-ink-muted sm:flex-row sm:flex-wrap sm:justify-between dark:text-slate-400">

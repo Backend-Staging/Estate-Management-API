@@ -15,6 +15,7 @@ const AUTH_REQUIRED_PATHS = new Set([
 	"/bookmark",
 	"/report-issue",
 	"/add-post",
+	"/help",
 	"/tenants",
 	"/technicians",
 ]);

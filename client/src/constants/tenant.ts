@@ -44,6 +44,11 @@ export const tenantNavLinks: LeftNavLink[] = [
 		imgLocation: "/assets/icons/report.svg",
 	},
 	{
+		path: "/help",
+		label: "Building Help",
+		imgLocation: "/assets/icons/speak.svg",
+	},
+	{
 		path: "/profile",
 		label: "My Profile",
 		imgLocation: "/assets/icons/user-profile.svg",

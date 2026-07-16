@@ -10,6 +10,7 @@ Tenant request:
 Return this JSON shape:
 {{
   "category": "plumbing | electrical | hvac | appliance | safety | pest_control | general",
+  "sub_category": "short specific sub-type",
   "urgency": "low | medium | high | emergency",
   "department": "maintenance | property_management | emergency_services | vendor",
   "emergency": true,

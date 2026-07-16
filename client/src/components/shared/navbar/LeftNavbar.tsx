@@ -7,6 +7,7 @@ import {
 	Bookmark,
 	Home,
 	LogOut,
+	MessageSquare,
 	MessageSquarePlus,
 	User,
 	Users,
@@ -22,6 +23,7 @@ const navIcons: Record<string, LucideIcon> = {
 	"/tenants": Users,
 	"/technicians": Wrench,
 	"/report-issue": AlertCircle,
+	"/help": MessageSquare,
 	"/bookmark": Bookmark,
 	"/add-post": MessageSquarePlus,
 };

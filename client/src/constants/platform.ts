@@ -56,8 +56,9 @@ export const AI_FEATURES: PlatformFeature[] = [
 			"Emergency procedure lookup",
 			"Maintenance documentation",
 		],
-		status: "planned",
+		status: "live",
 		icon: BrainCircuit,
+		href: "/help",
 	},
 	{
 		id: "work-order",
@@ -69,8 +70,9 @@ export const AI_FEATURES: PlatformFeature[] = [
 			"Duplicate issue detection",
 			"Escalation recommendations",
 		],
-		status: "planned",
+		status: "live",
 		icon: Sparkles,
+		href: "/welcome",
 	},
 	{
 		id: "tenant-comms",
@@ -78,12 +80,13 @@ export const AI_FEATURES: PlatformFeature[] = [
 		description:
 			"Conversational AI for tenant interaction, notifications, and issue reporting.",
 		capabilities: [
-			"SMS & voice workflows",
-			"AI-powered notifications",
+			"Policy Q&A chat",
+			"Maintenance guidance",
 			"Conversational reporting",
 		],
-		status: "planned",
+		status: "live",
 		icon: MessageSquare,
+		href: "/help",
 	},
 	{
 		id: "ops-dashboard",
@@ -95,8 +98,9 @@ export const AI_FEATURES: PlatformFeature[] = [
 			"Response-time analytics",
 			"Category & satisfaction trends",
 		],
-		status: "beta",
+		status: "live",
 		icon: BarChart3,
+		href: "/agent/dashboard",
 	},
 ];
 
@@ -124,7 +128,7 @@ export const VISION_ROADMAP: RoadmapItem[] = [
 			"RAG property knowledge assistant",
 			"Work order intelligence",
 			"Operations dashboard analytics",
-			"Tenant communication automation",
+			"Tenant communication assistant",
 		],
 	},
 	{
