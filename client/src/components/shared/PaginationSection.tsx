@@ -45,7 +45,7 @@ const PaginationSection = ({
 					<PaginationPrevious onClick={handlePreviousClick} />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationLink className="h3-semibold font-robotoSlab dark:text-veryBlack inline-flex items-center rounded-md border border-transparent bg-lime-500">
+					<PaginationLink className="h3-semibold font-robotoSlab inline-flex items-center rounded-md border border-transparent bg-brand-500 text-white">
 						{currentPage}
 					</PaginationLink>
 				</PaginationItem>

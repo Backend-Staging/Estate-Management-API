@@ -4,13 +4,20 @@ import {
 	useGetPopularTagsQuery,
 	useGetTopPostsQuery,
 } from "@/lib/redux/features/posts/postApiSlice";
+import { useAppSelector } from "@/lib/redux/hooks/typedHooks";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default function RightNavbar() {
-	const { data } = useGetTopPostsQuery();
+	const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+	const { data } = useGetTopPostsQuery(undefined, { skip: !isAuthenticated });
 	const topPosts = data?.top_posts.results;
-	const { data: tagData } = useGetPopularTagsQuery();
+	const { data: tagData } = useGetPopularTagsQuery(undefined, {
+		skip: !isAuthenticated,
+	});
+
+	if (!isAuthenticated) return null;
+
 	return (
 		<section className="bg-baby_rich light-border custom-scrollbar shadow-platinum sticky right-0 top-0 flex h-screen w-[280px] flex-col justify-between overflow-y-auto border-l p-6 pt-36 max-xl:hidden dark:shadow-none">
 			<div>
