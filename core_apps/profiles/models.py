@@ -85,6 +85,13 @@ class Profile(TimeStampedModel):
         related_name="managed_repair_profiles",
         verbose_name=_("Invited by agent"),
     )
+    assigned_building = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        verbose_name=_("Assigned building"),
+        help_text=_("Building this repair staff member serves."),
+    )
     avatar = CloudinaryField(verbose_name=_("Avatar"), blank=True, null=True)
     gender = models.CharField(
         verbose_name=_("Gender"),

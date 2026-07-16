@@ -16,6 +16,7 @@ class RepairStaffCreateSerializer(serializers.Serializer):
     last_name = serializers.CharField(max_length=60)
     password = serializers.CharField(write_only=True, min_length=8)
     occupation = serializers.ChoiceField(choices=Profile.Occupation.choices)
+    assigned_building = serializers.CharField(max_length=50)
 
     def validate_email(self, value: str) -> str:
         if User.objects.filter(email__iexact=value).exists():
@@ -31,6 +32,7 @@ class RepairStaffCreateSerializer(serializers.Serializer):
     def create(self, validated_data: dict) -> User:
         agent: User = self.context["request"].user
         occupation = validated_data.pop("occupation")
+        assigned_building = validated_data.pop("assigned_building")
         password = validated_data.pop("password")
         user = User.objects.create_user(
             password=password,
@@ -40,7 +42,14 @@ class RepairStaffCreateSerializer(serializers.Serializer):
         profile.role = Profile.Role.REPAIR
         profile.occupation = occupation
         profile.managed_by_agent = agent
+        profile.assigned_building = assigned_building
         profile.save(
-            update_fields=["role", "occupation", "managed_by_agent", "updated_at"]
+            update_fields=[
+                "role",
+                "occupation",
+                "managed_by_agent",
+                "assigned_building",
+                "updated_at",
+            ]
         )
         return user

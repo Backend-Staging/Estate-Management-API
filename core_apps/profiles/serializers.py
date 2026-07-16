@@ -9,6 +9,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.ReadOnlyField(source="user.first_name")
     last_name = serializers.ReadOnlyField(source="user.last_name")
     username = serializers.ReadOnlyField(source="user.username")
+    user_id = serializers.UUIDField(source="user.id", read_only=True)
     full_name = serializers.ReadOnlyField(source="user.get_full_name")
     country_of_origin = CountryField(name_only=True)
     avatar = serializers.SerializerMethodField()
@@ -22,6 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "role",
+            "user_id",
             "first_name",
             "last_name",
             "username",
@@ -35,6 +37,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "date_joined",
             "avatar",
             "apartment",
+            "assigned_building",
             "average_rating",
         ]
 

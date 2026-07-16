@@ -37,7 +37,7 @@ export default function AgentDashboardPage() {
 
 				<div className="mt-6 grid gap-4 sm:grid-cols-3">
 					<Link
-						href="/apartment"
+						href="/agent/units"
 						className="flex items-center gap-3 rounded-lg border border-surface-border p-4 transition hover:border-brand-500/30 hover:shadow-card dark:border-slate-700"
 					>
 						<Building2 className="size-5 text-brand-600 dark:text-brand-400" />
@@ -51,7 +51,7 @@ export default function AgentDashboardPage() {
 						</div>
 					</Link>
 					<Link
-						href="/welcome"
+						href="/agent/issues"
 						className="flex items-center gap-3 rounded-lg border border-surface-border p-4 transition hover:border-brand-500/30 hover:shadow-card dark:border-slate-700"
 					>
 						<Wrench className="size-5 text-brand-600 dark:text-brand-400" />
@@ -65,7 +65,7 @@ export default function AgentDashboardPage() {
 						</div>
 					</Link>
 					<Link
-						href="/technicians"
+						href="/agent/maintenance"
 						className="flex items-center gap-3 rounded-lg border border-surface-border p-4 transition hover:border-brand-500/30 hover:shadow-card dark:border-slate-700"
 					>
 						<UserPlus className="size-5 text-brand-600 dark:text-brand-400" />
@@ -74,7 +74,7 @@ export default function AgentDashboardPage() {
 								Repair staff
 							</p>
 							<p className="text-xs text-ink-muted dark:text-slate-500">
-								Technician roster
+								Add maintenance personnel
 							</p>
 						</div>
 					</Link>

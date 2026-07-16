@@ -2,6 +2,7 @@ import { rootReducer } from "@/lib/redux/features/rootReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { baseApiSlice } from "./features/api/baseApiSlice";
+import "@/lib/redux/features/agents/agentsApiSlice";
 
 export const makeStore = () => {
 	return configureStore({

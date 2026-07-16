@@ -105,7 +105,7 @@ export default function OperationsOverview() {
 	const { data: myIssuesData } = useGetMyIssuesQuery(undefined, {
 		skip: !isAuthenticated || !canFetchMyIssues,
 	});
-	const { data: assignedData } = useGetMyAssignedIssuesQuery("", {
+	const { data: assignedData } = useGetMyAssignedIssuesQuery(undefined, {
 		skip: !isAuthenticated || !canFetchAssigned,
 	});
 

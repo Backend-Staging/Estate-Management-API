@@ -5,6 +5,7 @@ export const issueCreateSchema = z.object({
 	description: z.string().min(1, "An Issue must have a description"),
 	priority: z.enum(["low", "medium", "high"]),
 	status: z.enum(["reported", "resolved", "in_progress"]),
+	assigned_to: z.string().optional(),
 });
 
 export type TIssueCreateSchema = z.infer<typeof issueCreateSchema>;

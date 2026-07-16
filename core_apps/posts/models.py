@@ -1,6 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
@@ -20,6 +21,13 @@ class Post(TimeStampedModel):
     author = models.ForeignKey(
         User, verbose_name=_("Author"), on_delete=models.CASCADE, related_name="posts"
     )
+    building = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        db_index=True,
+        verbose_name=_("Building"),
+    )
     bookmarked_by = models.ManyToManyField(
         User, related_name="bookmarked_posts", blank=True
     )
@@ -36,10 +44,20 @@ class Post(TimeStampedModel):
         return f"{self.title}"
 
     @classmethod
-    def get_popular_tags(cls, limit=5):
-        return cls.tags.annotate(post_count=Count("taggit_taggeditem_items")).order_by(
-            "-post_count"
-        )[:limit]
+    def get_popular_tags(cls, limit=5, building=None):
+        qs = cls.objects.all()
+        if building:
+            qs = qs.filter(building=building)
+        post_pks = qs.values_list("pkid", flat=True)
+        content_type = ContentType.objects.get_for_model(cls)
+        return (
+            cls.tags.model.objects.filter(
+                taggit_taggeditem_items__content_type=content_type,
+                taggit_taggeditem_items__object_id__in=post_pks,
+            )
+            .annotate(post_count=Count("taggit_taggeditem_items"))
+            .order_by("-post_count")[:limit]
+        )
 
     def save(self, *args, **kwargs) -> None:
         author = self.author

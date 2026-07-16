@@ -87,6 +87,7 @@ class IssueCreateAPIView(generics.CreateAPIView):
                 "Your tenancy must be verified by your agent before you can open issues."
             )
 
+        serializer.context["apartment"] = apartment
         issue = serializer.save(reported_by=self.request.user, apartment=apartment)
 
         send_issue_confirmation_email(issue)

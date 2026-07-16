@@ -5,6 +5,7 @@ from django.db.models import F
 from rest_framework import serializers
 from taggit.models import Tag
 from taggit.serializers import TagListSerializerField, TaggitSerializer
+from core_apps.common.building import get_user_building
 from core_apps.common.models import ContentView
 from core_apps.posts.models import Post, Reply
 
@@ -145,6 +146,7 @@ class BasePostSerializer(serializers.ModelSerializer):
             "is_upvoted",
             "replies_count",
             "avatar",
+            "building",
         ]
         read_only_fields = ["id", "slug", "author_username", "created_at", "updated_at"]
 
@@ -190,7 +192,8 @@ class PostSerializer(TaggitSerializer, BasePostSerializer):
     def create(self, validated_data) -> Post:
         tags = validated_data.pop("tags")
         user = self.context["request"].user
-        post = Post.objects.create(author=user, **validated_data)
+        building = get_user_building(user) or ""
+        post = Post.objects.create(author=user, building=building, **validated_data)
         post.tags.set(tags)
         return post
 

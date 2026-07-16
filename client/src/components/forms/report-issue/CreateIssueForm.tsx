@@ -2,6 +2,7 @@
 
 import { useGetMyApartmentQuery } from "@/lib/redux/features/apartment/apartmentApiSlice";
 import { useReportIssueMutation } from "@/lib/redux/features/issues/issueApiSlice";
+import { useGetAllTechniciansQuery } from "@/lib/redux/features/users/usersApiSlice";
 import { issueCreateSchema, TIssueCreateSchema } from "@/lib/validationSchemas";
 import { extractErrorMessage } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +27,9 @@ const ClientOnly = dynamic<{ children: React.ReactNode }>(
 export default function CreateIssueForm() {
 	const { data } = useGetMyApartmentQuery();
 	const apartment = data?.apartment;
+	const { data: technicianData } = useGetAllTechniciansQuery({
+		building: apartment?.building,
+	});
 
 	const [reportIssue, { isLoading }] = useReportIssueMutation();
 	const router = useRouter();
@@ -52,6 +56,7 @@ export default function CreateIssueForm() {
 		const valuesWithApartmentId = {
 			...formValues,
 			apartmentId: apartment.id,
+			assigned_to: formValues.assigned_to || undefined,
 		};
 
 		try {
@@ -66,6 +71,12 @@ export default function CreateIssueForm() {
 			toast.error(errorMessage || "An error occurred");
 		}
 	};
+
+	const maintenanceOptions =
+		technicianData?.non_tenant_profiles?.results.map((profile) => ({
+			value: profile.user_id ?? profile.id,
+			label: `${profile.full_name} (${profile.occupation})`,
+		})) ?? [];
 
 	return (
 		<main>
@@ -154,6 +165,36 @@ export default function CreateIssueForm() {
 						</p>
 					)}
 				</div>
+				{maintenanceOptions.length > 0 && (
+					<div>
+						<label className="h4-semibold dark:text-babyPowder">
+							Preferred maintenance person
+						</label>
+						<div className="mt-1 flex items-center space-x-3 text-sm">
+							<ClientOnly>
+								<Controller
+									name="assigned_to"
+									control={control}
+									render={({ field: { onChange, onBlur, value } }) => (
+										<Select
+											className="mt-1 w-full"
+											options={maintenanceOptions}
+											value={maintenanceOptions.find(
+												(option) => option.value === value,
+											)}
+											onChange={(val) => onChange(val?.value ?? "")}
+											onBlur={onBlur}
+											isClearable
+											placeholder="Optional — pick someone from your building"
+											instanceId="maintenance-select"
+											styles={customStyles}
+										/>
+									)}
+								/>
+							</ClientOnly>
+						</div>
+					</div>
+				)}
 				<Button
 					type="submit"
 					className="h4-semibold bg-eerieBlack dark:bg-pumpkin mt-2 w-full text-white"

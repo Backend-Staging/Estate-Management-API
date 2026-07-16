@@ -193,11 +193,13 @@ export interface IssueData {
 
 export interface ReportIssueData extends IssueData {
 	apartmentId: string;
+	assigned_to?: string;
 }
 
 export interface Issue {
 	id: string;
 	apartment_unit: string;
+	apartment_building?: string;
 	reported_by: string;
 	managed_by?: string | null;
 	can_update?: boolean;
@@ -208,6 +210,8 @@ export interface Issue {
 	priority: "low" | "medium" | "high";
 	view_count: number;
 	assigned_to?: string;
+	assigned_to_id?: string;
+	assigned_to_name?: string;
 }
 
 export interface IssueResponse {
@@ -232,7 +236,12 @@ export interface IssueStatusData {
 
 export interface UpdateIssueData extends IssueStatusData {
 	issueId: string;
+	assigned_to?: string;
 }
+export interface AgentIssuesResponse {
+	issues: Issue[];
+}
+
 export interface MyIssuesResponse {
 	my_issues: {
 		count: number;
@@ -263,7 +272,67 @@ export interface ApartmentResponse {
 		unit_number: string;
 		building: string;
 		floor: number;
+		tenant_verified_at?: string | null;
 	};
+}
+
+export interface ManagedApartment {
+	id: string;
+	created_at: string;
+	unit_number: string;
+	building: string;
+	floor: number;
+	tenant: string | null;
+	tenant_email?: string | null;
+	tenant_name?: string | null;
+	tenant_verified_at: string | null;
+}
+
+export interface ManagedApartmentsResponse {
+	apartments: ManagedApartment[];
+}
+
+export interface ManagedApartmentUpdateData {
+	tenant_verified_at?: string | null;
+	building?: string;
+	floor?: number;
+	unit_number?: string;
+}
+
+export interface RepairStaffCreateData {
+	email: string;
+	username: string;
+	first_name: string;
+	last_name: string;
+	password: string;
+	occupation: string;
+	assigned_building: string;
+}
+
+export interface RepairStaffCreateResponse {
+	repair_staff: {
+		id: string;
+		email: string;
+		username: string;
+		message: string;
+	};
+}
+
+export interface RepairStaffProfile {
+	id: string;
+	user_id?: string;
+	slug: string;
+	role: "repair";
+	first_name: string;
+	last_name: string;
+	username: string;
+	full_name: string;
+	occupation: string;
+	assigned_building: string;
+}
+
+export interface RepairStaffListResponse {
+	repair_staff: RepairStaffProfile[];
 }
 
 export interface LeftNavLink {

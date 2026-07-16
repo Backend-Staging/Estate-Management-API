@@ -24,7 +24,7 @@ export const usersApiSlice = baseApiSlice.injectEndpoints({
 			providesTags: ["User"],
 		}),
 
-		getAllTechnicians: builder.query<NonTenantResponse, QueryParams>({
+		getAllTechnicians: builder.query<NonTenantResponse, QueryParams & { building?: string }>({
 			query: (params = {}) => {
 				const queryString = new URLSearchParams();
 
@@ -33,6 +33,9 @@ export const usersApiSlice = baseApiSlice.injectEndpoints({
 				}
 				if (params.searchTerm) {
 					queryString.append("search", params.searchTerm);
+				}
+				if (params.building) {
+					queryString.append("building", params.building);
 				}
 				return `/profiles/non-tenant-profiles/?${queryString.toString()}`;
 			},

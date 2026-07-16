@@ -6,6 +6,9 @@ from .models import Apartment
 class ApartmentSerializer(serializers.ModelSerializer):
     """Tenant: read assigned apartment. Includes management metadata."""
 
+    tenant_email = serializers.ReadOnlyField(source="tenant.email", default=None)
+    tenant_name = serializers.ReadOnlyField(source="tenant.get_full_name", default=None)
+
     class Meta:
         model = Apartment
         exclude = ["pkid", "updated_at"]

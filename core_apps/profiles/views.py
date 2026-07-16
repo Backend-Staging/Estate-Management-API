@@ -1,4 +1,5 @@
 from typing import List
+
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -7,6 +8,8 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from core_apps.common.building import get_user_building
+from core_apps.common.permissions import user_is_tenant
 from core_apps.common.renderers import GenericJSONRenderer
 from .models import Profile
 from .serializers import (
@@ -105,8 +108,14 @@ class NonTenantProfileListAPIView(generics.ListAPIView):
     filterset_fields = ["occupation", "role", "gender", "country_of_origin"]
 
     def get_queryset(self) -> List[Profile]:
-        return (
+        qs = (
             Profile.objects.exclude(user__is_staff=True)
             .exclude(user__is_superuser=True)
             .filter(role=Profile.Role.REPAIR)
         )
+        building = self.request.query_params.get("building")
+        if not building and user_is_tenant(self.request.user):
+            building = get_user_building(self.request.user)
+        if building:
+            qs = qs.filter(assigned_building=building)
+        return qs

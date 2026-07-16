@@ -6,7 +6,7 @@ import { TabsContent } from "../ui/tabs";
 import IssueCard from "../cards/IssueCard";
 
 export default function AssignedIssues() {
-	const { data: assignedIssues, isLoading } = useGetMyAssignedIssuesQuery("");
+	const { data: assignedIssues, isLoading } = useGetMyAssignedIssuesQuery();
 	const myAssignedIssues = assignedIssues?.assigned_issues;
 	const showLoading = isLoading && !myAssignedIssues;
 

@@ -1,4 +1,5 @@
 import {
+	AgentIssuesResponse,
 	IssueResponse,
 	MyAssignedIssuesResponse,
 	MyIssuesResponse,
@@ -22,8 +23,12 @@ export const issueApiSlice = baseApiSlice.injectEndpoints({
 			query: () => "/issues/me/",
 			providesTags: ["Issue"],
 		}),
-		getMyAssignedIssues: builder.query<MyAssignedIssuesResponse, string>({
-			query: (userId) => `/issues/assigned/${userId}/`,
+		getMyAssignedIssues: builder.query<MyAssignedIssuesResponse, void>({
+			query: () => "/issues/assigned/",
+			providesTags: ["Issue"],
+		}),
+		getAgentIssues: builder.query<AgentIssuesResponse, void>({
+			query: () => "/issues/",
 			providesTags: ["Issue"],
 		}),
 		getSingleIssue: builder.query<IssueResponse, string>({
@@ -55,5 +60,6 @@ export const {
 	useGetMyIssuesQuery,
 	useGetSingleIssueQuery,
 	useGetMyAssignedIssuesQuery,
+	useGetAgentIssuesQuery,
 	useUpdateIssueMutation,
 } = issueApiSlice;

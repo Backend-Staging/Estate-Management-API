@@ -16,19 +16,20 @@ export default function TenantHome() {
 			{isAuthenticated && <TenantQuickActions />}
 			{isAuthenticated && <MyMaintenancePreview />}
 
-			<section id="building-board" className="scroll-mt-28 space-y-4">
-				<div>
-					<h2 className="font-display text-xl font-bold tracking-tight text-ink dark:text-slate-100">
-						Building board
-					</h2>
-					<p className="mt-1 text-sm text-ink-muted dark:text-slate-400">
-						{isAuthenticated
-							? "See what neighbors are sharing — events, for-sale items, questions, and community updates."
-							: "Take a look at what neighbors are posting — sign in when you're ready to join the conversation."}
-					</p>
-				</div>
-				<PostCard />
-			</section>
+			{isAuthenticated && (
+				<section id="building-board" className="scroll-mt-28 space-y-4">
+					<div>
+						<h2 className="font-display text-xl font-bold tracking-tight text-ink dark:text-slate-100">
+							Building board
+						</h2>
+						<p className="mt-1 text-sm text-ink-muted dark:text-slate-400">
+							See what neighbors are sharing — events, for-sale items, questions,
+							and community updates.
+						</p>
+					</div>
+					<PostCard />
+				</section>
+			)}
 		</div>
 	);
 }

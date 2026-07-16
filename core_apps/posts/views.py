@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from core_apps.common.models import ContentView
 from core_apps.common.renderers import GenericJSONRenderer
 from .filters import PostFilter
+from .building_scope import filter_posts_by_building, resolve_building_filter
 from .models import Post, Reply
 from .permissions import CanCreateEditPost
 from .serializers import (
@@ -39,7 +40,8 @@ class PostListAPIView(generics.ListAPIView):
     object_label = "posts"
 
     def get_queryset(self):
-        return Post.objects.annotate(replies_count=Count("replies")).order_by(
+        queryset = Post.objects.annotate(replies_count=Count("replies"))
+        return filter_posts_by_building(queryset, self.request).order_by(
             "-upvotes", "-created_at"
         )
 
@@ -231,7 +233,8 @@ class PopularTagsListAPIView(generics.ListAPIView):
     object_label = "popular_tags"
 
     def get_queryset(self):
-        return Post.get_popular_tags()
+        building = resolve_building_filter(self.request)
+        return Post.get_popular_tags(limit=5, building=building)
 
 
 class TopPostsListAPIView(generics.ListAPIView):
@@ -244,8 +247,9 @@ class TopPostsListAPIView(generics.ListAPIView):
         queryset = Post.objects.annotate(
             replies_count=Count("replies"),
             view_count=Count("content_views"),
-        ).order_by("-upvotes", "-view_count", "-replies_count")[:6]
-        return queryset
+        )
+        queryset = filter_posts_by_building(queryset, self.request)
+        return queryset.order_by("-upvotes", "-view_count", "-replies_count")[:6]
 
 
 class PostsByTagListAPIView(generics.ListAPIView):
@@ -256,6 +260,7 @@ class PostsByTagListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         tag_slug = self.kwargs.get("tag_slug")
-        return Post.objects.filter(tags__slug=tag_slug).annotate(
+        queryset = Post.objects.filter(tags__slug=tag_slug).annotate(
             replies_count=Count("replies")
         )
+        return filter_posts_by_building(queryset, self.request)
